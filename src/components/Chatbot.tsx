@@ -19,6 +19,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [coordinate, setCoordinate] = useState<string>("");
   const [spells] = useState<string[]>(["TraceThread", "InvokeGlossolalia"]);
+  const [valency, setValency] = useState<number>(0);
 
   const fetchBookFromWorker = async (query: string) => {
 
@@ -35,7 +36,8 @@ export default function Chatbot() {
         return;
       }
       
-
+      const valency = data.valency || 0;
+      setValency(valency);
       const potency = data.potency || 0;
       const newBook: Book = {
         title: data.term || query,
@@ -111,6 +113,7 @@ export default function Chatbot() {
   {displayCoordinate(bookBindle[bookBindle.length - 1].coordinate)}
 </a>
             </p>
+            <p><strong>SynApp Valency:</strong> {valency}</p>
             <p><strong>Potency:</strong> {bookBindle[bookBindle.length - 1].potency}</p>
           </>
         ) : (
