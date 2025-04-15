@@ -98,13 +98,9 @@ export default function Chatbot() {
             <p><strong>Title:</strong> {bookBindle[bookBindle.length - 1].title}</p>
             <p>
               <strong>Coordinate:</strong>{" "}
-              <a
-                href={bookBindle[bookBindle.length - 1].coordinate}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {displayCoordinate(bookBindle[bookBindle.length - 1].coordinate)}
-              </a>
+              <a href={bookBindle[bookBindle.length - 1].coordinate}>
+  {displayCoordinate(bookBindle[bookBindle.length - 1].coordinate)}
+</a>
             </p>
             <p><strong>Potency:</strong> {bookBindle[bookBindle.length - 1].potency}</p>
           </>
