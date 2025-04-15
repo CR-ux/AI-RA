@@ -22,29 +22,27 @@ export default function Chatbot() {
   const [valency, setValency] = useState<number>(0);
 
   const fetchBookFromWorker = async (query: string) => {
-
-    
     try {
-      const response = await fetch(
-        `https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`
-      );
+      const response = await fetch(`https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`);
       const data = await response.json();
-      console.log("💬 Worker responded with:", data);
-
-      if (!response.ok || !data.term) {
-        addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error || "Unknown issue."}`);
+  
+      if (data.error && data.fallback) {
+        addMessage(`🧩 Partial glimpse from the Daemon: ${data.fallback}`);
         return;
       }
-      
-      const valency = data.valency || 0;
-      setValency(valency);
+  
+      if (data.error) {
+        addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error}`);
+        return;
+      }
+  
       const potency = data.potency || 0;
       const newBook: Book = {
         title: data.term || query,
         coordinate: data.coordinate,
         potency,
       };
-
+  
       setCoordinate(data.coordinate);
       setBookBindle((prev) => [...prev.slice(-2), newBook]); // max 3 books
       setLexDefs((prev) => [...prev, `${data.term} (${potency})`]);
