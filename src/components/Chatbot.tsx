@@ -21,36 +21,38 @@ export default function Chatbot() {
   const [spells] = useState<string[]>(["TraceThread", "InvokeGlossolalia"]);
   const [valency, setValency] = useState<number>(0);
 
-const fetchBookFromWorker = async (query: string) => {
-  try {
-    const response = await fetch(`https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`);
-    const data = await response.json();
+  const fetchBookFromWorker = async (query: string) => {
 
-    if (data.error && data.fallback) {
-      addMessage(`🧩 Partial glimpse from the Daemon: ${data.fallback}`);
-      return;
+    
+    try {
+      const response = await fetch(
+        `https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`
+      );
+      const data = await response.json();
+      console.log("💬 Worker responded with:", data);
+
+      if (!response.ok || !data.term) {
+        addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error || "Unknown issue."}`);
+        return;
+      }
+      
+      const valency = data.valency || 0;
+      setValency(valency);
+      const potency = data.potency || 0;
+      const newBook: Book = {
+        title: data.term || query,
+        coordinate: data.coordinate,
+        potency,
+      };
+
+      setCoordinate(data.coordinate);
+      setBookBindle((prev) => [...prev.slice(-2), newBook]); // max 3 books
+      setLexDefs((prev) => [...prev, `${data.term} (${potency})`]);
+      addMessage(`📖 You open a new Book: ${data.coordinate}`);
+    } catch (error) {
+      addMessage("⚠️ The daemon failed to respond. You remain in narrative limbo.");
     }
-
-    if (data.error) {
-      addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error}`);
-      return;
-    }
-
-    const potency = data.potency || 0;
-    const newBook: Book = {
-      title: data.term || query,
-      coordinate: data.coordinate,
-      potency,
-    };
-
-    setCoordinate(data.coordinate);
-    setBookBindle((prev) => [...prev.slice(-2), newBook]); // max 3 books
-    setLexDefs((prev) => [...prev, `${data.term} (${potency})`]);
-    addMessage(`📖 You open a new Book: ${data.coordinate}`);
-  } catch (error) {
-    addMessage("⚠️ The daemon failed to respond. You remain in narrative limbo.");
-  }
-};
+  };
 
   const handleOption = (opt: number) => {
     setIteration((i) => i + 1);
