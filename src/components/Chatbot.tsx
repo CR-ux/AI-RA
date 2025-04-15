@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { getRandomBooks } from "./dummyBooks";
+
+
+type Book = {
+  title: string;
+  coordinate: string;
+  potency: number;
+};
 
 type Message = {
   text: string;
@@ -7,18 +13,31 @@ type Message = {
 };
 
 export default function Chatbot() {
+  const [bookBindle, setBookBindle] = useState<Book[]>([]);
+  const [lexDefs, setLexDefs] = useState<string[]>([]);
   const [iteration, setIteration] = useState(1);
-  const [bookBindle] = useState(getRandomBooks());
+  const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [coordinate, setCoordinate] = useState(bookBindle[0]);
-  const [lexDefs] = useState<string[]>([]);
+  const [coordinate, setCoordinate] = useState<string>("");
   const [spells] = useState<string[]>(["TraceThread", "InvokeGlossolalia"]);
 
   const fetchBookFromWorker = async (query: string) => {
     try {
       const response = await fetch(`https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`);
       const data = await response.json();
+  
+      const usageArray = data.usage ? data.usage.split("||").map((s: string) => s.trim()) : [];
+      const potency = usageArray.length;
+  
+      const newBook: Book = {
+        title: data.term || query,
+        coordinate: data.coordinate,
+        potency,
+      };
+  
       setCoordinate(data.coordinate);
+      setBookBindle((prev) => [...prev.slice(-2), newBook]); // max 3 books
+      setLexDefs((prev) => [...prev, `${data.term} (${potency})`]);
       addMessage(`📖 You open a new Book: ${data.coordinate}`);
     } catch (error) {
       addMessage("⚠️ The daemon failed to respond. You remain in narrative limbo.");
@@ -51,13 +70,46 @@ export default function Chatbot() {
         <p><strong>lexDefs:</strong> {lexDefs.join("; ") || "None yet"}</p>
       </div>
 
-      <div className="console">
-        {messages.map((m, i) => (
-          <div key={i}>
-            <code>[{m.iteration}] {m.text}</code>
-          </div>
-        ))}
-      </div>
+
+    <div className="bindle">
+      <h2>📚 Bindle</h2>
+      <ul>
+    {bookBindle.map((b, i) => (
+      <li key={i}>{b.title} — Potency: {b.potency}</li>
+    ))}
+      </ul>
+    </div>
+
+<div className="vessel">
+  <h2>🧪 Vessel</h2>
+  <p>Coming soon: combine Books for lexHex reactions...</p>
+</div>
+<div className="console">
+  {messages.map((m, i) => (
+    <div key={i}>
+      <code>[{m.iteration}] {m.text}</code>
+    </div>
+  ))}
+
+  <form
+    onSubmit={(e) => {
+      e.preventDefault();
+      if (!userInput.trim()) return;
+      addMessage(`🧠 You query: "${userInput}"`);
+      fetchBookFromWorker(userInput.trim());
+      setUserInput("");
+    }}
+  >
+    <input
+      type="text"
+      value={userInput}
+      onChange={(e) => setUserInput(e.target.value)}
+      placeholder="Enter a term, phrase, or spell..."
+      className="console-input"
+    />
+    <button type="submit">Summon</button>
+  </form>
+</div>
 
       <div className="options">
         {[1, 2, 3, 4, 5, 6].map((n) => (
