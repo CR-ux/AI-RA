@@ -24,7 +24,6 @@ export default function Chatbot() {
 
   const fetchBookFromWorker = async (query: string) => {
 
-    
     try {
       const response = await fetch(
         `https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`
