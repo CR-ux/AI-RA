@@ -21,11 +21,19 @@ export default function Chatbot() {
   const [spells] = useState<string[]>(["TraceThread", "InvokeGlossolalia"]);
 
   const fetchBookFromWorker = async (query: string) => {
+
+    
     try {
       const response = await fetch(
         `https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`
       );
       const data = await response.json();
+
+      if (!response.ok || !data.term) {
+        addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error || "Unknown issue."}`);
+        return;
+      }
+      
 
       const potency = data.potency || 0;
       const newBook: Book = {
