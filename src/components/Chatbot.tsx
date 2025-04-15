@@ -80,6 +80,19 @@ export default function Chatbot() {
       </ul>
     </div>
 
+    <div className="book-details">
+  <h2>📖 Current Book</h2>
+  {bookBindle.length > 0 ? (
+    <>
+      <p><strong>Title:</strong> {bookBindle[bookBindle.length - 1].title}</p>
+      <p><strong>Coordinate:</strong> {bookBindle[bookBindle.length - 1].coordinate}</p>
+      <p><strong>Potency:</strong> {bookBindle[bookBindle.length - 1].potency}</p>
+    </>
+  ) : (
+    <p>No book summoned yet.</p>
+  )}
+</div>
+
 <div className="vessel">
   <h2>🧪 Vessel</h2>
   <p>Coming soon: combine Books for lexHex reactions...</p>
