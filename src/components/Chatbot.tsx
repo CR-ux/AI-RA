@@ -60,7 +60,7 @@ export default function Chatbot() {
 
   const displayCoordinate = (url: string) => {
     const match = url.match(/\/([^\/]+)\.md$/);
-    const slug = match?.[1] || "Unknown";
+    const slug = match?.[1] || "lexDict";
     return `https://carpvs.com/${slug}`;
   };
 
