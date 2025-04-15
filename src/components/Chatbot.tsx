@@ -20,6 +20,7 @@ export default function Chatbot() {
   const [coordinate, setCoordinate] = useState<string>("");
   const [spells] = useState<string[]>(["TraceThread", "InvokeGlossolalia"]);
   const [valency, setValency] = useState<number>(0);
+  const [links, setLinks] = useState<string[]>([]);
 
   const fetchBookFromWorker = async (query: string) => {
 
@@ -30,6 +31,9 @@ export default function Chatbot() {
       );
       const data = await response.json();
       console.log("💬 Worker responded with:", data);
+
+      setLinks(data.links || []);
+
 
       if (!response.ok || !data.term) {
         addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error || "Unknown issue."}`);
@@ -121,10 +125,24 @@ export default function Chatbot() {
         )}
       </div>
 
+
       <div className="vessel">
         <h2>🧪 Vessel</h2>
         <p>Coming soon: combine Books for lexHex reactions...</p>
       </div>
+
+      {links.length > 0 && (
+  <div className="exits">
+    <h2>↪ Exits</h2>
+    <ul>
+      {links.map((link, index) => (
+        <li key={index}>
+          <button onClick={() => fetchBookFromWorker(link)}>{link}</button>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
 
       <div className="console">
         {messages.map((m, i) => (
