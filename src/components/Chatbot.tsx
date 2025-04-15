@@ -8,11 +8,11 @@ type Message = {
 
 export default function Chatbot() {
   const [iteration, setIteration] = useState(1);
-  const [lexDefs, setLexDefs] = useState<string[]>([]);
   const [bookBindle] = useState(getRandomBooks());
   const [messages, setMessages] = useState<Message[]>([]);
   const [coordinate, setCoordinate] = useState(bookBindle[0]);
-  const [spells, setSpells] = useState<string[]>(["TraceThread", "InvokeGlossolalia"]);
+  const [lexDefs] = useState<string[]>([]);
+  const [spells] = useState<string[]>(["TraceThread", "InvokeGlossolalia"]);
 
   const fetchBookFromWorker = async (query: string) => {
     try {
