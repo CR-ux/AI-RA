@@ -28,6 +28,7 @@ export default function Chatbot() {
         `https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`
       );
       const data = await response.json();
+      console.log("💬 Worker responded with:", data);
 
       if (!response.ok || !data.term) {
         addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error || "Unknown issue."}`);
