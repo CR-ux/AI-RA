@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type Book = {
   title: string;
@@ -24,7 +24,7 @@ export default function Chatbot() {
   const [fallback, setFallback] = useState<string | null>(null);
   const [typedText, setTypedText] = useState("");
   const typingSpeed = 30; // ms per character
-  const redactLength = 120; // number of characters before redaction
+  const redactLength = 144000; // number of characters before redaction
 
   useEffect(() => {
     if (fallback) {
@@ -150,7 +150,7 @@ export default function Chatbot() {
         )}
         {fallback && (
           <div className="fallback">
-            <h3>📄 Folio Fragment</h3>
+            <h3>📄 REDACTED FRAGMENT: 144,000 Characters, Sealed:</h3>
             <p><em>{typedText}</em></p>
           </div>
         )}
