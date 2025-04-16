@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Book = {
   title: string;
@@ -22,6 +22,26 @@ export default function Chatbot() {
   const [valency, setValency] = useState<number>(0);
   const [links, setLinks] = useState<string[]>([]);
   const [fallback, setFallback] = useState<string | null>(null);
+  const [typedText, setTypedText] = useState("");
+  const typingSpeed = 30; // ms per character
+  const redactLength = 120; // number of characters before redaction
+
+  useEffect(() => {
+    if (fallback) {
+      let index = 0;
+      const fragment = fallback.slice(0, redactLength);
+      const interval = setInterval(() => {
+        if (index < fragment.length) {
+          setTypedText(fragment.slice(0, index + 1));
+          index++;
+        } else {
+          clearInterval(interval);
+          setTypedText(fragment + " {REDACTED}");
+        }
+      }, typingSpeed);
+      return () => clearInterval(interval);
+    }
+  }, [fallback]);
 
   const fetchBookFromWorker = async (query: string) => {
     try {
@@ -131,7 +151,7 @@ export default function Chatbot() {
         {fallback && (
           <div className="fallback">
             <h3>📄 Folio Fragment</h3>
-            <p><em>{fallback}</em></p>
+            <p><em>{typedText}</em></p>
           </div>
         )}
       </div>
