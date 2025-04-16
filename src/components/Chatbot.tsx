@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ReactMarkdown from 'react-markdown';
 
 type Book = {
   title: string;
@@ -181,7 +182,9 @@ export default function Chatbot() {
         {fallback && (
           <div className="fallback">
             <h3>📄 REDACTED FRAGMENT: 144,000 Characters, Sealed:</h3>
-            <p><em>{typedText}</em></p>
+            <div className="typed-markdown">
+              <ReactMarkdown>{typedText}</ReactMarkdown>
+            </div>
           </div>
         )}
       </div>
