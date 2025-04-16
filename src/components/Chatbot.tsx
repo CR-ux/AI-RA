@@ -21,9 +21,9 @@ export default function Chatbot() {
   const [spells] = useState<string[]>(["TraceThread", "InvokeGlossolalia"]);
   const [valency, setValency] = useState<number>(0);
   const [links, setLinks] = useState<string[]>([]);
+  const [fallback, setFallback] = useState<string | null>(null);
 
   const fetchBookFromWorker = async (query: string) => {
-
     try {
       const response = await fetch(
         `https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`
@@ -32,26 +32,31 @@ export default function Chatbot() {
       console.log("💬 Worker responded with:", data);
 
       setLinks(data.links || []);
+      setCoordinate(data.coordinate || "");
 
+      const valencyValue = data.valency || 0;
+      setValency(valencyValue);
+      setFallback(data.fallback || null);
 
-      if (!response.ok || !data.term) {
+      if (!response.ok || (!data.term && !data.fallback)) {
         addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error || "Unknown issue."}`);
         return;
       }
-      
-      const valency = data.valency || 0;
-      setValency(valency);
-      const potency = data.potency || 0;
-      const newBook: Book = {
-        title: data.term || query,
-        coordinate: data.coordinate,
-        potency,
-      };
 
-      setCoordinate(data.coordinate);
-      setBookBindle((prev) => [...prev.slice(-2), newBook]); // max 3 books
-      setLexDefs((prev) => [...prev, `${data.term} (${potency})`]);
-      addMessage(`📖 You open a new Book: ${data.coordinate}`);
+      if (data.term) {
+        const potency = data.potency || 0;
+        const newBook: Book = {
+          title: data.term,
+          coordinate: data.coordinate,
+          potency,
+        };
+
+        setBookBindle((prev) => [...prev.slice(-2), newBook]);
+        setLexDefs((prev) => [...prev, `${data.term} (${potency})`]);
+        addMessage(`📖 You open a new Book: ${data.coordinate}`);
+      } else {
+        addMessage(`📄 You found an unindexed folio...`);
+      }
     } catch (error) {
       addMessage("⚠️ The daemon failed to respond. You remain in narrative limbo.");
     }
@@ -73,10 +78,12 @@ export default function Chatbot() {
   };
 
   const displayCoordinate = (url: string) => {
-    const match = url.match(/\/([^\/]+)\.md$/);
+    const match = url?.match(/\/([^\/]+)\.md$/);
     const slug = match?.[1] || "lexDict";
     return `https://carpvs.com/${slug}`;
   };
+
+  const lastBook = bookBindle[bookBindle.length - 1];
 
   return (
     <div className="chatbot">
@@ -107,23 +114,27 @@ export default function Chatbot() {
 
       <div className="book-details">
         <h2>📖 Current Book</h2>
-        {bookBindle.length > 0 ? (
+        {lastBook ? (
           <>
-            <p><strong>Title:</strong> {bookBindle[bookBindle.length - 1].title}</p>
-            <p>
-              <strong>Coordinate:</strong>{" "}
-              <a href={bookBindle[bookBindle.length - 1].coordinate}>
-  {displayCoordinate(bookBindle[bookBindle.length - 1].coordinate)}
-</a>
+            <p><strong>Title:</strong> {lastBook.title}</p>
+            <p><strong>Coordinate:</strong>{" "}
+              <a href={lastBook.coordinate} target="_blank" rel="noopener noreferrer">
+                {displayCoordinate(lastBook.coordinate)}
+              </a>
             </p>
             <p><strong>SynApp Valency:</strong> {valency}</p>
-            <p><strong>Potency:</strong> {bookBindle[bookBindle.length - 1].potency}</p>
+            <p><strong>Potency:</strong> {lastBook.potency}</p>
           </>
         ) : (
           <p>No book summoned yet.</p>
         )}
+        {fallback && (
+          <div className="fallback">
+            <h3>📄 Folio Fragment</h3>
+            <p><em>{fallback}</em></p>
+          </div>
+        )}
       </div>
-
 
       <div className="vessel">
         <h2>🧪 Vessel</h2>
@@ -131,17 +142,17 @@ export default function Chatbot() {
       </div>
 
       {links.length > 0 && (
-  <div className="exits">
-    <h2>↪ Exits</h2>
-    <ul>
-      {links.map((link, index) => (
-        <li key={index}>
-          <button onClick={() => fetchBookFromWorker(link)}>{link}</button>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
+        <div className="exits">
+          <h2>↪ Exits</h2>
+          <ul>
+            {links.map((link, index) => (
+              <li key={index}>
+                <button onClick={() => fetchBookFromWorker(link)}>{link}</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="console">
         {messages.map((m, i) => (
