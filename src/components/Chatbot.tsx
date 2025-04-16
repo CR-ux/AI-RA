@@ -102,7 +102,7 @@ export default function Chatbot() {
 
         setBookBindle((prev) => [...prev.slice(-2), newBook]);
         setLexDefs((prev) => [...prev, `${data.term} (${potency})`]);
-        addMessage(`📖 You open a new Book: ${data.coordinate}`);
+        addMessage(`📖 You open a new Book: ${newBook.title}`);
       } else {
         addMessage(`📄 You found an unindexed folio...`);
       }
