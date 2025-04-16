@@ -11,6 +11,35 @@ type Message = {
   iteration: number;
 };
 
+function useTypedConsole(messages: Message[], typingSpeed = 15) {
+  const [typedConsole, setTypedConsole] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (messages.length === 0) return;
+
+    const lastMessage = messages[messages.length - 1];
+    let index = 0;
+    let buffer = "";
+    const interval = setInterval(() => {
+      if (index < lastMessage.text.length) {
+        buffer = lastMessage.text.slice(0, index + 1);
+        setTypedConsole((prev) => [...prev.slice(0, -1), buffer]);
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, typingSpeed);
+
+    if (messages.length > typedConsole.length) {
+      setTypedConsole((prev) => [...prev, ""]);
+    }
+
+    return () => clearInterval(interval);
+  }, [messages]);
+
+  return typedConsole;
+}
+
 export default function Chatbot() {
   const [bookBindle, setBookBindle] = useState<Book[]>([]);
   const [lexDefs, setLexDefs] = useState<string[]>([]);
@@ -104,6 +133,7 @@ export default function Chatbot() {
   };
 
   const lastBook = bookBindle[bookBindle.length - 1];
+  const typedConsole = useTypedConsole(messages);
 
   return (
     <div className="chatbot">
@@ -175,9 +205,9 @@ export default function Chatbot() {
       )}
 
       <div className="console">
-        {messages.map((m, i) => (
+        {typedConsole.map((line, i) => (
           <div key={i}>
-            <code>[{m.iteration}] {m.text}</code>
+            <code>[{messages[i].iteration}] {line}</code>
           </div>
         ))}
 
