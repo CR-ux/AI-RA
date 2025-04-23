@@ -142,7 +142,30 @@ export default function Chatbot() {
   const typedConsole = useTypedConsole(messages);
 
   return (
-    <div className="chatbot">
+    <>
+      <style>
+        {`
+          body {
+            background-color: #000;
+            color: #9fe0b3;
+            font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
+          }
+
+          a {
+            color: #9fe0b3;
+            text-decoration: underline;
+          }
+
+          a:hover {
+            color: #afffc0;
+          }
+
+          code {
+            font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
+          }
+        `}
+      </style>
+      <div className="chatbot">
       <h1>AI:RA — Interfacing the Ineffable</h1>
 
       <div className="stats">
@@ -215,7 +238,7 @@ export default function Chatbot() {
       <div className="console">
         {typedConsole.map((line, i) => (
           <div key={i}>
-            <code>[{messages[i].iteration}] {line}</code>
+            <code>&gt; {line}</code>
           </div>
         ))}
 
@@ -285,5 +308,6 @@ export default function Chatbot() {
         ))}
       </div>
     </div>
+    </>
   );
 }
