@@ -42,6 +42,7 @@ function useTypedConsole(messages: Message[], typingSpeed = 15) {
 
   return typedConsole;
 }
+//empty
 
 export default function Chatbot() {
   const [bookBindle, setBookBindle] = useState<Book[]>([]);
