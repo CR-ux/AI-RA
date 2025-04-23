@@ -128,7 +128,10 @@ export default function Chatbot() {
   };
 
   const displayCoordinate = (url: string) => {
-    const match = url?.match(/\/([^\/]+)\.md$/);
+    if (!url) return "https://carpvs.com/lexDict";
+  
+    // Try to get the last path segment whether or not it ends in `.md`
+    const match = url.match(/\/([^\/]+)(?:\.md)?$/);
     const slug = match?.[1] || "lexDict";
     return `https://carpvs.com/${slug}`;
   };
