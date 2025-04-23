@@ -1,3 +1,5 @@
+import TerminalIcon from '@mui/icons-material/Terminal';
+import { InputAdornment, TextField } from '@mui/material';
 import { useEffect, useState } from "react";
 import ReactMarkdown from 'react-markdown';
 
@@ -226,13 +228,42 @@ export default function Chatbot() {
             setUserInput("");
           }}
         >
-          <input
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            placeholder="Enter a term, phrase, or spell..."
-            className="console-input"
-          />
+<TextField
+  fullWidth
+  variant="filled"
+  placeholder="Enter a term, phrase, or Book..."
+  value={userInput}
+  onChange={(e) => setUserInput(e.target.value)}
+  InputProps={{
+    startAdornment: (
+      <InputAdornment position="start">
+        <TerminalIcon sx={{ color: '#9fe0b3' }} />
+      </InputAdornment>
+    ),
+  }}
+  componentsProps={{
+    input: {
+      sx: {
+        fontFamily: 'monospace',
+        color: '#9fe0b3',
+      },
+    },
+  }}
+  sx={{
+    mt: 2,
+    mb: 2,
+    '& .MuiFilledInput-root': {
+      backgroundColor: '#111',
+      borderRadius: '4px',
+    },
+    '& .MuiFilledInput-root:hover': {
+      backgroundColor: '#1a1a1a',
+    },
+    '& .MuiFilledInput-root.Mui-focused': {
+      backgroundColor: '#1a1a1a',
+    },
+  }}
+/>
           <button type="submit">Summon</button>
         </form>
       </div>
