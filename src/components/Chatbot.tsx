@@ -262,9 +262,14 @@ export default function Chatbot() {
     '& .MuiFilledInput-root.Mui-focused': {
       backgroundColor: '#1a1a1a',
     },
+    '& .MuiFilledInput-underline:before': {
+      borderBottom: 'none',
+    },
+    '& .MuiFilledInput-underline:after': {
+      borderBottom: 'none',
+    },
   }}
 />
-          <button type="submit">Summon</button>
         </form>
       </div>
 
