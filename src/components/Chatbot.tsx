@@ -91,6 +91,19 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         `https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`
       );
       const data = await response.json();
+
+      if (!data.markdown && response.ok) {
+        const rawText = await response.text();
+        if (rawText.startsWith("<!doctype html>")) {
+          const stripped = rawText
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&amp;/g, "&");
+          setFallback(stripped.slice(0, redactLength));
+          return;
+        }
+      }
+
       console.log("💬 Worker responded with:", data);
 
       setLinks(data.links || []);
@@ -98,6 +111,16 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
 
       const valencyValue = data.valency || 0;
       setValency(valencyValue);
+
+      if (data.fallback && data.fallback.startsWith("&lt;!doctype html&gt;")) {
+        const stripped = data.fallback
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .replace(/&amp;/g, "&");
+        setFallback(stripped.slice(0, redactLength));
+        return;
+      }
+
       setFallback(data.markdown || data.fallback || null);
 
       if (!response.ok || (!data.term && !data.fallback)) {
