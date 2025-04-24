@@ -3,6 +3,12 @@ import { InputAdornment, TextField } from '@mui/material';
 import { useEffect, useState } from "react";
 import ReactMarkdown from 'react-markdown';
 
+function decodeHTMLEntities(text: string): string {
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = text;
+  return textarea.value;
+}
+
 interface ChatbotProps {
   initialContent?: string;
 }
@@ -244,7 +250,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
           <div className="fallback">
             <h3>📄 REDACTED FRAGMENT: 144,000 Characters, Sealed:</h3>
             <div className="typed-markdown">
-              <ReactMarkdown>{typedText}</ReactMarkdown>
+              <ReactMarkdown>{decodeHTMLEntities(typedText)}</ReactMarkdown>
             </div>
           </div>
         )}
