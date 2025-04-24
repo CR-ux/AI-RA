@@ -111,6 +111,9 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       }
 
       console.log("💬 Worker responded with:", data);
+      if (data.synAppSysGuide) {
+        addMessage(`🧬 SynAppSys Guide: \n\n${data.synAppSysGuide}`);
+      }
 
       setLinks(data.links || []);
       setCoordinate(data.coordinate || "");
