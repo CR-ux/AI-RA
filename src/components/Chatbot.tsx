@@ -133,7 +133,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       setFallback(data.markdown || data.fallback || null);
 
       if (!response.ok || (!data.term && !data.fallback)) {
-        addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error || "Unknown issue."}`);
+        addMessage(`  [x] Could not summon a Book for "${query}". Daemon says: ${data.error || "Unknown issue."}`);
         return;
       }
 
@@ -147,9 +147,9 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
 
         setBookBindle((prev) => [...prev.slice(-2), newBook]);
         setLexDefs((prev) => [...prev, `${data.term} (${potency})`]);
-        addMessage(`📖 You open a new Book: ${newBook.title}`);
+        addMessage(`< You open a new Book: ${newBook.title}`);
       } else {
-        addMessage(`📄 You found an unindexed folio...`);
+        addMessage(`> You found an unindexed folio...`);
       }
     } catch (error) {
       addMessage("⚠️ The daemon failed to respond. You remain in narrative limbo.");
@@ -251,7 +251,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         )}
         {fallback && (
           <div className="fallback">
-            <h3>📄 REDACTED FRAGMENT: 144,000 Characters, Sealed:</h3>
+            <h3>REDACTED FRAGMENT: 144,000 Characters, Sealed:</h3>
             <div className="typed-markdown">
               <ReactMarkdown>{decodeHTMLEntities(typedText)}</ReactMarkdown>
             </div>
@@ -288,7 +288,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
           onSubmit={(e) => {
             e.preventDefault();
             if (!userInput.trim()) return;
-            addMessage(`🧠 You query: "${userInput}"`);
+            addMessage(`You query: "${userInput}"`);
             fetchBookFromWorker(userInput.trim());
             setUserInput("");
           }}
