@@ -98,7 +98,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
 
       const valencyValue = data.valency || 0;
       setValency(valencyValue);
-      setFallback(data.fallback || null);
+      setFallback(data.markdown || data.fallback || null);
 
       if (!response.ok || (!data.term && !data.fallback)) {
         addMessage(`❌ Could not summon a Book for "${query}". Daemon says: ${data.error || "Unknown issue."}`);
