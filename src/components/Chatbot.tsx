@@ -3,6 +3,10 @@ import { InputAdornment, TextField } from '@mui/material';
 import { useEffect, useState } from "react";
 import ReactMarkdown from 'react-markdown';
 
+interface ChatbotProps {
+  initialContent?: string;
+}
+
 type Book = {
   title: string;
   coordinate: string;
@@ -44,7 +48,7 @@ function useTypedConsole(messages: Message[], typingSpeed = 15) {
 }
 //empty
 
-export default function Chatbot() {
+export default function Chatbot({ initialContent }: ChatbotProps) {
   const [bookBindle, setBookBindle] = useState<Book[]>([]);
   const [lexDefs, setLexDefs] = useState<string[]>([]);
   const [iteration, setIteration] = useState(1);
@@ -55,6 +59,11 @@ export default function Chatbot() {
   const [valency, setValency] = useState<number>(0);
   const [links, setLinks] = useState<string[]>([]);
   const [fallback, setFallback] = useState<string | null>(null);
+  useEffect(() => {
+    if (initialContent && !fallback) {
+      setFallback(initialContent.slice(0, redactLength));
+    }
+  }, [initialContent, fallback]);
   const [typedText, setTypedText] = useState("");
   const typingSpeed = 30; // ms per character
   const redactLength = 144000; // number of characters before redaction
