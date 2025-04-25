@@ -135,7 +135,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       setFallback(data.markdown || data.fallback || null);
 
       if (!response.ok || (!data.term && !data.fallback)) {
-        addMessage(`  [x] Could not summon a Book for "${query}". The Society Wishes To Inform You: ${data.links || "Unknown issue."}`);
+        addMessage(`  [ɸ] Could not summon a Book for "${query}". The Society Wishes To Inform You: ${data.links || "Unknown issue."}`);
         return;
       }
 
@@ -191,8 +191,8 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         {`
           body {
             background-color: #000;
-            color: #9fe0b3;
-            font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
+            color: #c2e1a9;
+            font-family: '', 'Courier New', monospace;
           }
 
           a {
