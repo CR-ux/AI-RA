@@ -136,7 +136,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       setFallback(data.markdown || data.fallback || null);
 
       if (!response.ok || (!data.term && !data.fallback)) {
-        addMessage(`  [ɸ] Could not summon a Book for "${query}". The Society Wishes To Inform You: ${data.links || "Unknown issue."}`);
+        addMessage(`  [ɸ] Could not summon a Book for "${query}". The Society Wishes To Inform You: ${data.links || "UnNoen issue."}`);
         return;
       }
 
