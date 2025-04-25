@@ -113,6 +113,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       }
 
       console.log("💬 Worker responded with:", data);
+      console.log("Coord =", coordinate)
       if (data.synAppSysGuide) {
         addMessage(`SynAppSys Guide: \n\n${data.synAppSysGuide}`);
       }
@@ -196,12 +197,12 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
           }
 
           a {
-            color: #9fe0b3;
-            text-decoration: underline;
+            color: ##ffffff;
+            text-decoration: strikethrough;
           }
 
           a:hover {
-            color: #afffc0;
+            color: ##ffffff;
           }
 
           code {
