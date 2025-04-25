@@ -52,7 +52,6 @@ function useTypedConsole(messages: Message[], typingSpeed = 15) {
 
   return typedConsole;
 }
-//empty
 
 export default function Chatbot({ initialContent }: ChatbotProps) {
   const [bookBindle, setBookBindle] = useState<Book[]>([]);
@@ -65,14 +64,16 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
   const [valency, setValency] = useState<number>(0);
   const [links, setLinks] = useState<string[]>([]);
   const [fallback, setFallback] = useState<string | null>(null);
+  const redactLength = 144000; // number of characters before redaction
+  const typingSpeed = 30; // ms per character
+
   useEffect(() => {
     if (initialContent && !fallback) {
       setFallback(initialContent.slice(0, redactLength));
     }
   }, [initialContent, fallback]);
+
   const [typedText, setTypedText] = useState("");
-  const typingSpeed = 30; // ms per character
-  const redactLength = 144000; // number of characters before redaction
 
   useEffect(() => {
     if (fallback) {
@@ -92,6 +93,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
   }, [fallback]);
 
   const fetchBookFromWorker = async (query: string) => {
+    if (!query.trim()) return;
     try {
       const response = await fetch(
         `https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`
