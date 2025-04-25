@@ -114,7 +114,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
 
       console.log("💬 Worker responded with:", data);
       if (data.synAppSysGuide) {
-        addMessage(`🧬 SynAppSys Guide: \n\n${data.synAppSysGuide}`);
+        addMessage(`SynAppSys Guide: \n\n${data.synAppSysGuide}`);
       }
 
       setLinks(data.links || []);
@@ -154,7 +154,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         addMessage(`> You found an unindexed folio...`);
       }
     } catch (error) {
-      addMessage("⚠️ The daemon failed to respond. You remain in narrative limbo.");
+      addMessage("From the Reception Desk of The Maternal Board of Missed Directives Through The Islanded Aisles And Spiral Stair of The Endless Library of Fable.PRIORITY FLAG: UTMOST IMPORTANCE.DESTROY AFTER DECODINGCLEARANCE LAYER: ZERO 17.04.1994 AN UNDETERMINED FLIGHTOF AN UNDETERMINED STAREXᴬᶜᵀ LOCATION REDACTEDLexicomythographers in Attendance:T, C, M, G, S, X, Φ Audio Sample 1. REDACTED From The Archives of The Woman in the Wallpaper, Our Devouring Mother of The Society of Lexicomythographers notKnown as ARIA | DNE. EPIGRAPHREDACTED talked to us at length about a great scheme for writing a novel in the first person, using a narrator who omitted or corrupted what happened and who ran into various contradictions, so that only a handful of readers, a very small handful, would be able to decipher the horrible or banal reality behind the novel. From the far end of the corridor, the mirror was watching us; and we discovered, with the inevitability of discoveries made late at night, that mirrors have something grotesque about them.Borges, Jorge Luis - Tlon, Uqbar, Orbis Tertius, Ex Libris Borges ok sudo knot: InitiateTrans Mission FOR WORD As will be apparent to all members by now, the works of One Jorge Luis Borges have been discovered to be Apocrypha of Prophetic Revelation.All of Borges' characters, narratives, and universes appear to be materialising into Form, within our Knot-Known universe. We Pray To Our Unknown Gods That Nobody Will Read These Words.");
     }
   };
 
@@ -225,7 +225,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       </div>
 
       <div className="bindle">
-        <h2>📚 Bindle</h2>
+        <h2>bookBindle</h2>
         <ul>
           {bookBindle.map((b, i) => (
             <li key={i}>
@@ -236,7 +236,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       </div>
 
       <div className="book-details">
-        <h2>📖 Current Book</h2>
+        <h2>Current Book Held, Close||Open</h2>
         {lastBook ? (
           <>
             <p><strong>Title:</strong> {lastBook.title}</p>
@@ -249,7 +249,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
             <p><strong>Potency:</strong> {lastBook.potency}</p>
           </>
         ) : (
-          <p>No book summoned yet.</p>
+          <p>No Grimoire Referenced as yet.</p>
         )}
         {fallback && (
           <div className="fallback">
@@ -262,8 +262,8 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       </div>
 
       <div className="vessel">
-        <h2>🧪 Vessel</h2>
-        <p>Coming soon: combine Books for lexHex reactions...</p>
+        <h2>ATHANOR--</h2>
+        <p>Empty.</p>
       </div>
 
       {links.length > 0 && (
@@ -346,7 +346,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
             {n}. {n === 1
               ? "View Ascii Map"
               : n === 2
-              ? "Close and Place Book Back Upon Shelf"
+              ? "Close|Place Open Book Back Upon Shelf"
               : `Option ${n}`}
           </button>
         ))}
