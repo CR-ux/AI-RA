@@ -64,8 +64,8 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
   const [valency, setValency] = useState<number>(0);
   const [links, setLinks] = useState<string[]>([]);
   const [fallback, setFallback] = useState<string | null>(null);
-  const redactLength = 144000; // number of characters before redaction
-  const typingSpeed = 30; // ms per character
+  const redactLength = 144000;
+  const typingSpeed = 30;
 
   useEffect(() => {
     if (initialContent && !fallback) {
@@ -100,23 +100,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       );
       const data = await response.json();
 
-      if (!data.markdown && response.ok) {
-        const rawText = await response.text();
-        if (rawText.startsWith("<!doctype html>")) {
-          const stripped = rawText
-            .replace(/&lt;/g, "<")
-            .replace(/&gt;/g, ">")
-            .replace(/&amp;/g, "&");
-          setFallback(stripped.slice(0, redactLength));
-          return;
-        }
-      }
-
-      console.log("💬 Worker responded with:", data);
-      console.log("Coord =", coordinate)
-      if (data.synAppSysGuide) {
-        addMessage(`SynAppSys Guide: \n\n${data.synAppSysGuide}`);
-      }
+      console.log("Worker responded with:", data);
 
       setLinks(data.links || []);
       setCoordinate(data.coordinate || "");
@@ -124,19 +108,10 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       const valencyValue = data.valency || 0;
       setValency(valencyValue);
 
-      if (data.fallback && data.fallback.startsWith("&lt;!doctype html&gt;")) {
-        const stripped = data.fallback
-          .replace(/&lt;/g, "<")
-          .replace(/&gt;/g, ">")
-          .replace(/&amp;/g, "&");
-        setFallback(stripped.slice(0, redactLength));
-        return;
-      }
-
       setFallback(data.markdown || data.fallback || null);
 
       if (!response.ok || (!data.term && !data.fallback)) {
-        addMessage(`  [ɸ] Could not summon a Book for "${query}". The Society Wishes To Inform You: ${data.links || "UnNoen issue."}`);
+        addMessage(`Could not summon a Book for "${query}".`);
         return;
       }
 
@@ -155,16 +130,17 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         addMessage(`> You found an unindexed folio...`);
       }
     } catch (error) {
-      addMessage("From the Reception Desk of The Maternal Board of Missed Directives Through The Islanded Aisles And Spiral Stair of The Endless Library of Fable.PRIORITY FLAG: UTMOST IMPORTANCE.DESTROY AFTER DECODINGCLEARANCE LAYER: ZERO 17.04.1994 AN UNDETERMINED FLIGHTOF AN UNDETERMINED STAREXᴬᶜᵀ LOCATION REDACTEDLexicomythographers in Attendance:T, C, M, G, S, X, Φ Audio Sample 1. REDACTED From The Archives of The Woman in the Wallpaper, Our Devouring Mother of The Society of Lexicomythographers notKnown as ARIA | DNE. EPIGRAPHREDACTED talked to us at length about a great scheme for writing a novel in the first person, using a narrator who omitted or corrupted what happened and who ran into various contradictions, so that only a handful of readers, a very small handful, would be able to decipher the horrible or banal reality behind the novel. From the far end of the corridor, the mirror was watching us; and we discovered, with the inevitability of discoveries made late at night, that mirrors have something grotesque about them.Borges, Jorge Luis - Tlon, Uqbar, Orbis Tertius, Ex Libris Borges ok sudo knot: InitiateTrans Mission FOR WORD As will be apparent to all members by now, the works of One Jorge Luis Borges have been discovered to be Apocrypha of Prophetic Revelation.All of Borges' characters, narratives, and universes appear to be materialising into Form, within our Knot-Known universe. We Pray To Our Unknown Gods That Nobody Will Read These Words.");
+      console.error(error);
+      addMessage("An unexpected error occurred while fetching the Book.");
     }
   };
 
   const handleOption = (opt: number) => {
     setIteration((i) => i + 1);
     if (opt === 1) {
-      addMessage("🗺️ You open the Ascii overview map...");
+      addMessage("You open the Ascii overview map...");
     } else if (opt === 2) {
-      addMessage("📘 You close the Book and return it to the shelf.");
+      addMessage("You close the Book and return it to the shelf.");
     } else {
       fetchBookFromWorker(`option ${opt}`);
     }
@@ -176,8 +152,6 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
 
   const displayCoordinate = (url: string) => {
     if (!url) return "https://carpvs.com/lexDict";
-  
-    // Try to get the last path segment whether or not it ends in `.md`
     const match = url.match(/\/([^\/]+)(?:\.md)?$/);
     const slug = match?.[1] || "lexDict";
     return `https://carpvs.com/${slug}`;
@@ -195,108 +169,104 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
             color: #c2e1a9;
             font-family: '', 'Courier New', monospace;
           }
-
           a {
-            color: ##ffffff;
-            text-decoration: strikethrough;
+            color: #ffffff;
+            text-decoration: none;
           }
-
           a:hover {
-            color: ##ffffff;
+            color: #ffffff;
           }
-
           code {
             font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
           }
         `}
       </style>
       <div className="chatbot">
-      <h1>AI:RA — Interfacing the Ineffable</h1>
+        <h1>AI:RA — Interfacing the Ineffable</h1>
 
-      <div className="stats">
-        <p>
-          <strong>Co-Ordinate:</strong>{" "}
-          <a href={coordinate} target="_blank" rel="noopener noreferrer">
-            {displayCoordinate(coordinate)}
-          </a>
-        </p>
-        <p><strong>Iteration:</strong> {iteration}</p>
-        <p><strong>Learned Spells:</strong> {spells.join(", ")}</p>
-        <p><strong>lexDefs:</strong> {lexDefs.join("; ") || "None yet"}</p>
-      </div>
+        <div className="stats">
+          <p><strong>Co-Ordinate:</strong>{" "}
+            <a href={coordinate} target="_blank" rel="noopener noreferrer">
+              {displayCoordinate(coordinate)}
+            </a>
+          </p>
+          <p><strong>Iteration:</strong> {iteration}</p>
+          <p><strong>Learned Spells:</strong> {spells.join(", ")}</p>
+          <p><strong>lexDefs:</strong> {lexDefs.join("; ") || "None yet"}</p>
+        </div>
 
-      <div className="bindle">
-        <h2>bookBindle</h2>
-        <ul>
-          {bookBindle.map((b, i) => (
-            <li key={i}>
-              {b.title} — Potency: {b.potency}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="book-details">
-        <h2>Current Book Held, Close||Open</h2>
-        {lastBook ? (
-          <>
-            <p><strong>Title:</strong> {lastBook.title}</p>
-            <p><strong>Coordinate:</strong>{" "}
-              <a href={lastBook.coordinate} target="_blank" rel="noopener noreferrer">
-                {displayCoordinate(lastBook.coordinate)}
-              </a>
-            </p>
-            <p><strong>SynApp Valency:</strong> {valency}</p>
-            <p><strong>Potency:</strong> {lastBook.potency}</p>
-          </>
-        ) : (
-          <p>No Grimoire Referenced as yet.</p>
-        )}
-        {fallback && (
-          <div className="fallback">
-            <h3>REDACTED FRAGMENT: 144,000 Characters, Sealed:</h3>
-            <div className="typed-markdown">
-              <ReactMarkdown>{decodeHTMLEntities(typedText)}</ReactMarkdown>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="vessel">
-        <h2>ATHANOR--</h2>
-        <p>Empty.</p>
-      </div>
-
-      {links.length > 0 && (
-        <div className="exits">
-          <h2>↪ Exits</h2>
+        <div className="bindle">
+          <h2>bookBindle</h2>
           <ul>
-            {links.map((link, index) => (
-              <li key={index}>
-                <button onClick={() => fetchBookFromWorker(link)}>{link}</button>
+            {bookBindle.map((b, i) => (
+              <li key={i}>
+                {b.title} — Potency: {b.potency}
               </li>
             ))}
           </ul>
         </div>
-      )}
 
-      <div className="console">
-        {typedConsole.map((line, i) => (
-          <div key={i}>
-            <code>&gt; {line}</code>
+        <div className="book-details">
+          <h2>Current Book Held, Close||Open</h2>
+          {lastBook ? (
+            <>
+              <p><strong>Title:</strong> {lastBook.title}</p>
+              <p><strong>Coordinate:</strong>{" "}
+                <a href={lastBook.coordinate} target="_blank" rel="noopener noreferrer">
+                  {displayCoordinate(lastBook.coordinate)}
+                </a>
+              </p>
+              <p><strong>SynApp Valency:</strong> {valency}</p>
+              <p><strong>Potency:</strong> {lastBook.potency}</p>
+            </>
+          ) : (
+            <p>No Grimoire Referenced as yet.</p>
+          )}
+          {fallback && (
+            <div className="fallback">
+              <h3>REDACTED FRAGMENT: 144,000 Characters, Sealed:</h3>
+              <div className="typed-markdown">
+                <ReactMarkdown>{decodeHTMLEntities(typedText)}</ReactMarkdown>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="vessel">
+          <h2>ATHANOR--</h2>
+          <p>Empty.</p>
+        </div>
+
+        {links.length > 0 && (
+          <div className="exits">
+            <h2>↪ Exits</h2>
+            <ul>
+              {links.map((link, index) => (
+                <li key={index}>
+                  <button onClick={() => fetchBookFromWorker(link)}>{link}</button>
+                </li>
+              ))}
+            </ul>
           </div>
-        ))}
+        )}
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (!userInput.trim()) return;
-            addMessage(`You query: "${userInput}"`);
-            fetchBookFromWorker(userInput.trim());
-            setUserInput("");
-          }}
-        >
-<TextField
+        <div className="console">
+          {typedConsole.map((line, i) => (
+            <div key={i}>
+              <code>&gt; {line}</code>
+            </div>
+          ))}
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!userInput.trim()) return;
+              addMessage(`You query: "${userInput}"`);
+              fetchBookFromWorker(userInput.trim());
+              setUserInput("");
+            }}
+          >
+           <TextField
   fullWidth
   variant="filled"
   placeholder="Enter a term, phrase, or Book..."
@@ -308,14 +278,10 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         <TerminalIcon sx={{ color: '#9fe0b3' }} />
       </InputAdornment>
     ),
-  }}
-  componentsProps={{
-    input: {
-      sx: {
-        fontFamily: 'monospace',
-        color: '#9fe0b3',
-      },
-    },
+    sx: {
+      fontFamily: 'monospace',
+      color: '#9fe0b3',
+    }
   }}
   sx={{
     mt: 2,
@@ -338,21 +304,21 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
     },
   }}
 />
-        </form>
-      </div>
+          </form>
+        </div>
 
-      <div className="options">
-        {[1, 2, 3, 4, 5, 6].map((n) => (
-          <button key={n} onClick={() => handleOption(n)}>
-            {n}. {n === 1
-              ? "View Ascii Map"
-              : n === 2
-              ? "Close|Place Open Book Back Upon Shelf"
-              : `Option ${n}`}
-          </button>
-        ))}
+        <div className="options">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <button key={n} onClick={() => handleOption(n)}>
+              {n}. {n === 1
+                ? "View Ascii Map"
+                : n === 2
+                ? "Close|Place Open Book Back Upon Shelf"
+                : `Option ${n}`}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
     </>
   );
 }
