@@ -66,3 +66,53 @@ button:focus-visible {
     background-color: #78867c;
   }
 }
+
+.exits ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  list-style: none;
+  gap: 1rem;
+}
+
+.exits li {
+  position: relative;
+  width: 100px;
+  height: 115px;
+  background-color: #111;
+  clip-path: polygon(
+    50% 0%, 
+    100% 25%, 
+    100% 75%, 
+    50% 100%, 
+    0% 75%, 
+    0% 25%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #9fe0b3;
+  cursor: pointer;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.exits li:hover {
+  background-color: #1a1a1a;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #9fe0b3;
+}
+
+.exits button {
+  all: unset;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+}

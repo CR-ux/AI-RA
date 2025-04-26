@@ -244,15 +244,17 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
 
         {links.length > 0 && (
           <div className="exits">
-            <h2>↪ Exits</h2>
-            <ul>
-              {links.map((link, index) => (
-                <li key={index}>
-                  <button onClick={() => fetchBookFromWorker(link)}>{link}</button>
-                </li>
-              ))}
-            </ul>
-          </div>
+  <h2>↪ Exits</h2>
+  <ul>
+    {links.map((link, index) => (
+      <li key={index}>
+        <button onClick={() => fetchBookFromWorker(link)}>
+          {link}
+        </button>
+      </li>
+    ))}
+  </ul>
+</div>
         )}
 
         <div className="console">
