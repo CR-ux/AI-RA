@@ -115,7 +115,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       setFallback(data.markdown || data.fallback || null);
 
       if (!response.ok || (!data.term && !data.fallback)) {
-        addMessage(`Could not summon a Book for "${query}".`);
+        addMessage(`Could not summon a Book for "${query}".Your Journey Ends, Hear`);
         return;
       }
 
