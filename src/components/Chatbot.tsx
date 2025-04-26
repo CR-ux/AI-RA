@@ -62,6 +62,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
   const [coordinate, setCoordinate] = useState<string>("");
   const [spells] = useState<string[]>(["TraceThread", "InvokeGlossolalia"]);
   const [valency, setValency] = useState<number>(0);
+  const [concentration, setConcentration] = useState<number>(0);
   const [links, setLinks] = useState<string[]>([]);
   const [fallback, setFallback] = useState<string | null>(null);
   const redactLength = 144000;
@@ -107,6 +108,9 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
 
       const valencyValue = data.valency || 0;
       setValency(valencyValue);
+
+      const concentrationValue = data.concentration || 0;
+      setConcentration(concentrationValue);
 
       setFallback(data.markdown || data.fallback || null);
 
@@ -218,6 +222,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
               </p>
               <p><strong>SynApp Valency:</strong> {valency}</p>
               <p><strong>Potency:</strong> {lastBook.potency}</p>
+              <p><strong>Concentration:</strong> {concentration}</p>
             </>
           ) : (
             <p>No Grimoire Referenced as yet.</p>
