@@ -66,20 +66,20 @@ button:focus-visible {
     background-color: #78867c;
   }
 }
-
 .exits ul {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 0.5rem;
   padding: 0;
   list-style: none;
-  gap: 1rem;
+  margin: 2rem 0;
 }
 
 .exits li {
   position: relative;
-  width: 100px;
-  height: 115px;
+  width: 120px;
+  height: 104px;
   background-color: #111;
   clip-path: polygon(
     50% 0%, 
@@ -97,7 +97,7 @@ button:focus-visible {
   font-size: 0.8rem;
   color: #9fe0b3;
   cursor: pointer;
-  transition: transform 0.3s, background-color 0.3s;
+  transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
 }
 
 .exits li:hover {
@@ -106,6 +106,12 @@ button:focus-visible {
   box-shadow: 0 0 10px #9fe0b3;
 }
 
+/* Honeycomb staggering effect */
+.exits li:nth-child(even) {
+  transform: translateY(30%) scale(1);
+}
+
+/* Button inside hexagon */
 .exits button {
   all: unset;
   width: 100%;
@@ -113,6 +119,8 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
   text-align: center;
+  padding: 0.5rem;
+  font-family: monospace;
+  font-size: 0.8rem;
 }
