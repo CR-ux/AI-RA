@@ -105,7 +105,7 @@ export default function SoundChamber({ valency, potency, floor, iteration }: Sou
             fontSize: '0.9rem',
           }}
         >
-          Touch the Silence to Hear the Machine
+         Who's There? You Know. You Know Who? You Know, You. 
         </button>
       </div>
     );
