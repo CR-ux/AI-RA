@@ -178,7 +178,10 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
 
 
       if (!response.ok || (!data.term && !data.fallback)) {
-        addMessage(`Could not summon a Book for "${query}".Your Journey Ends, Hear`);
+        const fallbackResponse = await fetch("https://raw.githubusercontent.com/CR-ux/THE-VAULT/main/notBorges%2Fthis%20universe%20(which%20some%20call%20the%20hospital).md");
+        const fallbackText = await fallbackResponse.text();
+        setFallback(fallbackText.slice(0, redactLength));
+        addMessage(`Book not in Memory. {REDACTING} with Icarus' final falling words write back from the Vault to make some sort of Meaning of All of This`);
         return;
       }
 
@@ -204,7 +207,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
   const handleOption = (opt: number) => {
     setIteration((i) => i + 1);
     if (opt === 1) {
-      addMessage("You open the Ascii overview map...");
+      addMessage("You try open the Ascii overview map. It is Unopenable.");
     } else if (opt === 2) {
       addMessage("You close the Book and return it to the shelf. The Light it gives it insufficient, and unceasing.");
     } else {
@@ -236,7 +239,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         const randomEntry = keys[Math.floor(Math.random() * keys.length)];
         fetchBookFromWorker(randomEntry);
       } else {
-        addMessage("The Vault yielded no doors. The Abyss holds you.");
+        addMessage("urgent.");
       }
     } catch (error) {
       console.error(error);
@@ -272,6 +275,10 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         iteration={iteration}
       />
       <div className="chatbot">
+      <a href="https://www.carpvs.com/this%20universe%20(which%20some%20call%20the%20hospital)" target="_blank" rel="noopener noreferrer">
+              urgent
+            </a>
+
         <h1>AI:RA — Interfacing the Ineffable</h1>
         <h5>The Interface (Which Some Call Inhospitable)</h5>
         <h6>Is Comprised of an Indefinite, Perhaps Infinite, Non-Integer of Hexagonal Galleries</h6>
