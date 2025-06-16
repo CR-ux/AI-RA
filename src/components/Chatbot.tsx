@@ -419,7 +419,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
               </form>
             </div>
           </div>
-          </div>
+
           <div className="module book-details" style={{ textAlign: 'left' }}>
             <h2>Current Book Held, Close||Open</h2>
             {lastBook ? (
