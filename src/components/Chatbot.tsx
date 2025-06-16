@@ -295,6 +295,34 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
           code {
             font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
           }
+          .layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+          }
+          .side {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+          }
+          .module {
+            border: 1px solid #9fe0b3;
+            padding: 0.5rem;
+            background: #111;
+          }
+          .console {
+            display: flex;
+            flex-direction: column;
+            max-height: 400px;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          .console::-webkit-scrollbar {
+            display: none;
+          }
         `}
       </style>
       <SoundChamber
@@ -303,178 +331,159 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         floor={bookBindle.length}
         iteration={iteration}
       />
-      <div className="chatbot">
-      <a href="https://www.carpvs.com/this%20universe%20(which%20some%20call%20the%20hospital)" target="_blank" rel="noopener noreferrer">
-              urgent
-            </a>
-
+      <div className="chatbot" style={{ textAlign: 'center', marginBottom: '1rem' }}>
+        <a
+          href="https://www.carpvs.com/this%20universe%20(which%20some%20call%20the%20hospital)"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          urgent
+        </a>
         <h1>AI:RA — Interfacing the Ineffable</h1>
         <h5>The Interface (Which Some Call Inhospitable)</h5>
         <h6>Is Comprised of an Indefinite, Perhaps Infinite, Non-Integer of Hexagonal Galleries</h6>
         <h6>From any Hexagon, One Can See The Floors As Above and Below-one After Another, Endlessly</h6>
-        <div className="stats">
-          <p><strong>Co-Ordinate:</strong>{" "}
-            <a href={coordinate} target="_blank" rel="noopener noreferrer">
-              {displayCoordinate(coordinate)}
-            </a>
-          </p>
-          <p><strong>Iteration:</strong> {iteration}</p>
-          <p><strong>Learned Spells:</strong> {spells.join(", ")}</p>
-          <p><strong>lexDefs:</strong> {lexDefs.join("; ") || "None yet"}</p>
-        </div>
-
-        <div className="bindle">
-          <h2>bookBindle</h2>
-          <ul>
-            {bookBindle.map((b, i) => (
-              <li key={i}>
-                {b.title} — Potency: {b.potency}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="book-details">
-          <h2>Current Book Held, Close||Open</h2>
-          {lastBook ? (
-            <>
-              <p><strong>Title:</strong> {lastBook.title}</p>
-              <p><strong>Coordinate:</strong>{" "}
-                <a href={lastBook.coordinate} target="_blank" rel="noopener noreferrer">
-                  {displayCoordinate(lastBook.coordinate)}
-                </a>
-              </p>
-              <p><strong>SynApp Valency:</strong> {valency}</p>
-              <p><strong>Potency:</strong> {lastBook.potency}</p>
-              <p><strong>Concentration:</strong> {concentration}</p>
-            </>
-          ) : (
-            <p>No Grimoire Referenced as yet.</p>
-          )}
-          {fallback && (
-            <div className="fallback">
-              <h3>REDACTED FRAGMENT: 144,000 Characters, Sealed:</h3>
-              <div className="typed-markdown">
-                <ReactMarkdown>{decodeHTMLEntities(typedText)}</ReactMarkdown>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="vessel">
-          <h2>ATHANOR--</h2>
-          <p>Empty.</p>
-        </div>
-
-        <div className="options">
-          <button key={7} onClick={() => {
-            if (bookBindle.length > 1) {
-              const previousBook = bookBindle[bookBindle.length - 2];
-              fetchBookFromWorker(previousBook.title);
-            } else {
-              window.open("https://carpvs.com/", "_blank");
-            }
-          }}>
-            ⬆ Anabasis (Ascend)
-          </button>
-          <button key={8} onClick={handleKatabasis}>
-            ⬇ Katabasis (Descend)
-          </button>
-        </div>
-        <div
-          className="chat-message"
-          style={{
-            width: '100%',
-            maxWidth: '800px',
-            margin: '0 auto',
-            padding: '1rem',
-            overflow: 'hidden'
-          }}
-        >
-          <HexExits
-            lexDefs={lexDefs}
-            entranceLink={bookBindle.length > 1 ? bookBindle[bookBindle.length - 2]?.title : ""}
-            exitLink={links[0] || ""}
-          />
-        </div>
-
-        <div className="console" style={{
-          width: '100%',
-          maxWidth: '800px',
-          margin: '0 auto',
-          padding: '1rem',
-          border: '1px solid #9fe0b3',
-          display: 'flex',
-          flexDirection: 'column',
-          maxHeight: '400px',
-          overflowY: 'scroll',
-          scrollbarWidth: 'none', // Firefox
-          msOverflowStyle: 'none', // IE 10+
-          '&::-webkit-scrollbar': {
-            display: 'none' // Chrome, Safari, Opera
-          }
-        }}>
-          {typedConsole.map((line, i) => (
-            <div key={i}>
-              <code>&gt; {line}</code>
-            </div>
-          ))}
-          <div style={{ position: 'sticky', bottom: 0, backgroundColor: '#000', paddingTop: '1rem' }}>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!userInput.trim()) return;
-                addMessage(`You query: "${userInput}"`);
-                fetchBookFromWorker(userInput.trim());
-                setUserInput("");
-              }}
-            >
-              <TextField
-                fullWidth
-                variant="filled"
-                placeholder="Place. Hold. err()"
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <TerminalIcon sx={{ color: '#9fe0b3' }} />
-                    </InputAdornment>
-                  ),
-                  sx: {
-                    fontFamily: 'monospace',
-                    color: '#9fe0b3',
-                  }
-                }}
-                sx={{
-                  mt: 2,
-                  mb: 2,
-                  '& .MuiFilledInput-root': {
-                    backgroundColor: '#1a1a1a',
-                    borderRadius: '4px',
-                  },
-                  '& .MuiFilledInput-root:hover': {
-                    backgroundColor: '#1a1a1a',
-                  },
-                  '& .MuiFilledInput-root.Mui-focused': {
-                    backgroundColor: '#1a1a1a',
-                  },
-                  '& .MuiFilledInput-underline:before': {
-                    borderBottom: 'none',
-                  },
-                  '& .MuiFilledInput-underline:after': {
-                    borderBottom: 'none',
-                  },
-                }}
-              />
-            </form>
+      </div>
+      <div className="layout">
+        <div className="side">
+          <div className="module bindle">
+            <h2>bookBindle</h2>
+            <ul>
+              {bookBindle.map((b, i) => (
+                <li key={i}>
+                  {b.title} — Potency: {b.potency}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="module vessel">
+            <h2>ATHANOR--</h2>
+            <p>Empty.</p>
           </div>
         </div>
-
-        <div className="options">
-          <button onClick={() => handleOption(1)}>1. View Ascii Map</button>
-          <button onClick={() => handleOption(2)}>2. Close|Place Open Book Back Upon Shelf</button>
+        <div className="center-column" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+          <div className="module">
+            <HexExits
+              lexDefs={lexDefs}
+              entranceLink={bookBindle.length > 1 ? bookBindle[bookBindle.length - 2]?.title : ""}
+              exitLink={links[0] || ""}
+            />
+          </div>
+          <div className="module console">
+            {typedConsole.map((line, i) => (
+              <div key={i}>
+                <code>&gt; {line}</code>
+              </div>
+            ))}
+            <div style={{ position: 'sticky', bottom: 0, backgroundColor: '#000', paddingTop: '1rem' }}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!userInput.trim()) return;
+                  addMessage(`You query: "${userInput}"`);
+                  fetchBookFromWorker(userInput.trim());
+                  setUserInput("");
+                }}
+              >
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  placeholder="Place. Hold. err()"
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <TerminalIcon sx={{ color: '#9fe0b3' }} />
+                      </InputAdornment>
+                    ),
+                    sx: {
+                      fontFamily: 'monospace',
+                      color: '#9fe0b3',
+                    }
+                  }}
+                  sx={{
+                    mt: 2,
+                    mb: 2,
+                    '& .MuiFilledInput-root': {
+                      backgroundColor: '#1a1a1a',
+                      borderRadius: '4px',
+                    },
+                    '& .MuiFilledInput-root:hover': {
+                      backgroundColor: '#1a1a1a',
+                    },
+                    '& .MuiFilledInput-root.Mui-focused': {
+                      backgroundColor: '#1a1a1a',
+                    },
+                    '& .MuiFilledInput-underline:before': {
+                      borderBottom: 'none',
+                    },
+                    '& .MuiFilledInput-underline:after': {
+                      borderBottom: 'none',
+                    },
+                  }}
+                />
+              </form>
+            </div>
+          </div>
         </div>
+        <div className="side">
+          <div className="module stats">
+            <p><strong>Co-Ordinate:</strong>{' '}
+              <a href={coordinate} target="_blank" rel="noopener noreferrer">
+                {displayCoordinate(coordinate)}
+              </a>
+            </p>
+            <p><strong>Iteration:</strong> {iteration}</p>
+            <p><strong>Learned Spells:</strong> {spells.join(', ')}</p>
+            <p><strong>lexDefs:</strong> {lexDefs.join('; ') || 'None yet'}</p>
+          </div>
+          <div className="module book-details">
+            <h2>Current Book Held, Close||Open</h2>
+            {lastBook ? (
+              <>
+                <p><strong>Title:</strong> {lastBook.title}</p>
+                <p><strong>Coordinate:</strong>{' '}
+                  <a href={lastBook.coordinate} target="_blank" rel="noopener noreferrer">
+                    {displayCoordinate(lastBook.coordinate)}
+                  </a>
+                </p>
+                <p><strong>SynApp Valency:</strong> {valency}</p>
+                <p><strong>Potency:</strong> {lastBook.potency}</p>
+                <p><strong>Concentration:</strong> {concentration}</p>
+              </>
+            ) : (
+              <p>No Grimoire Referenced as yet.</p>
+            )}
+            {fallback && (
+              <div className="fallback">
+                <h3>REDACTED FRAGMENT: 144,000 Characters, Sealed:</h3>
+                <div className="typed-markdown">
+                  <ReactMarkdown>{decodeHTMLEntities(typedText)}</ReactMarkdown>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="options" style={{ textAlign: 'center', marginTop: '1rem' }}>
+        <button key={7} onClick={() => {
+          if (bookBindle.length > 1) {
+            const previousBook = bookBindle[bookBindle.length - 2];
+            fetchBookFromWorker(previousBook.title);
+          } else {
+            window.open('https://carpvs.com/', '_blank');
+          }
+        }}>
+          ⬆ Anabasis (Ascend)
+        </button>
+        <button key={8} onClick={handleKatabasis}>
+          ⬇ Katabasis (Descend)
+        </button>
+      </div>
+      <div className="options" style={{ textAlign: 'center', marginTop: '0.5rem' }}>
+        <button onClick={() => handleOption(1)}>1. View Ascii Map</button>
+        <button onClick={() => handleOption(2)}>2. Close|Place Open Book Back Upon Shelf</button>
       </div>
     </>
   );
