@@ -5,6 +5,20 @@ import ReactMarkdown from 'react-markdown';
 import HexExits from './HexExits';
 import SoundChamber from './SoundChamber';
 
+const KV_INDEX_URL = import.meta.env.VITE_KV_INDEX_URL;
+
+async function fetchIndexFromKV() {
+  if (!KV_INDEX_URL) return null;
+  try {
+    const res = await fetch(KV_INDEX_URL);
+    if (!res.ok) throw new Error('Failed to fetch KV index');
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
 
 
 function decodeHTMLEntities(text: string): string {
@@ -78,6 +92,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
   const [concentration, setConcentration] = useState<number>(0);
   const [links, setLinks] = useState<string[]>([]);
   const [fallback, setFallback] = useState<string | null>(null);
+  const [kvIndex, setKvIndex] = useState<Record<string, any> | null>(null);
   const redactLength = 144000;
   const typingSpeed = 30;
 
@@ -106,6 +121,12 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
     }
   }, [fallback]);
 
+  useEffect(() => {
+    fetchIndexFromKV()
+      .then((idx) => setKvIndex(idx))
+      .catch((err) => console.error(err));
+  }, []);
+
   const fetchBookFromWorker = async (query: string) => {
     if (!query.trim()) return;
     try {
@@ -113,6 +134,7 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         `https://ai-ra-worker.callierosecarp.workers.dev/?q=${encodeURIComponent(query)}`
       );
       const data = await response.json();
+      const indexEntry = kvIndex ? kvIndex[query] : null;
       console.log("Raw data keys:", Object.keys(data));
       console.log("Raw data object:", data);
       console.log("Full fetched data:", data);
@@ -120,12 +142,12 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
       console.log("Received lexDefs:", data.lexDefs);
       console.log("defBlocks:", )
       setLinks(shuffleArray(data.links || []));
-      setCoordinate(data.coordinate || "");
+      setCoordinate(indexEntry?.coordinate || data.coordinate || "");
 
-      const valencyValue = data.valency || 0;
+      const valencyValue = indexEntry?.valency ?? data.valency ?? 0;
       setValency(valencyValue);
 
-      const concentrationValue = data.concentration || 0;
+      const concentrationValue = indexEntry?.concentration ?? data.concentration ?? 0;
       setConcentration(concentrationValue);
 
       setFallback(data.markdown || data.fallback || null);
@@ -185,11 +207,11 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         return;
       }
 
-      if (data.term) {
-        const potency = data.potency || 0;
+      if (data.term || indexEntry) {
+        const potency = indexEntry?.potency ?? data.potency ?? 0;
         const newBook: Book = {
-          title: data.term,
-          coordinate: data.coordinate,
+          title: data.term || query,
+          coordinate: indexEntry?.coordinate || data.coordinate || "",
           potency,
         };
 
@@ -231,9 +253,16 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
 
   const handleKatabasis = async () => {
     try {
-      const response = await fetch("https://raw.githubusercontent.com/CR-ux/THE-VAULT/main/index.json");
-      const index = await response.json();
-      const keys = Object.keys(index);
+      let keys: string[] = [];
+      if (kvIndex) {
+        keys = Object.keys(kvIndex);
+      } else {
+        const response = await fetch(
+          "https://raw.githubusercontent.com/CR-ux/THE-VAULT/main/index.json"
+        );
+        const index = await response.json();
+        keys = Object.keys(index);
+      }
 
       if (keys.length > 0) {
         const randomEntry = keys[Math.floor(Math.random() * keys.length)];
