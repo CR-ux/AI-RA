@@ -16,7 +16,7 @@ const HexExits = ({ lexDefs, entranceLink, exitLink }: HexExitsProps) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const hexSize = 90;
+    const hexSize = 45;
     const hexHeight = Math.sqrt(3) * hexSize;
     const hexWidth = 2 * hexSize;
 
@@ -118,16 +118,16 @@ const HexExits = ({ lexDefs, entranceLink, exitLink }: HexExitsProps) => {
   return (
     <div
       style={{
-        width: '800px',
-        height: '600px',
+        width: '400px',
+        height: '300px',
         overflow: 'hidden',
         margin: '2rem auto'
       }}
     >
-      <canvas
-        ref={canvasRef}
-        width={800}
-        height={600}
+        <canvas
+          ref={canvasRef}
+          width={400}
+          height={300}
         style={{
           display: "block",
           background: "#000000",
