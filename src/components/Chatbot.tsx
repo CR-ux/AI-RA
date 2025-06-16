@@ -280,6 +280,13 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
     <>
       <style>
         {`
+          .prompt-bar {
+            display: flex;
+            align-items: center;
+            padding-top: 0.5rem;
+            background-color: transparent;
+            border-top: 1px solid #9fe0b3;
+          }
           body {
             background-color: #000;
             color: #c2e1a9;
@@ -297,13 +304,21 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
           }
           .layout {
             display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
             gap: 1rem;
-            max-width: 1200px;
+            max-width: 600px;
             margin: 0 auto;
           }
-          .side {
+          .center-column {
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
             display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+          }
+          .side {
+            display: grid;
             flex-direction: column;
             gap: 1rem;
           }
@@ -312,20 +327,51 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
             padding: 0.5rem;
             background: #111;
             text-align: left;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            white-space: pre-wrap;
           }
-            .console {
-              display: flex;
-              flex-direction: column;
-              max-height: 400px;
-              overflow-y: scroll;
-              scrollbar-width: none;
-              -ms-overflow-style: none;
-              font-family: 'Courier New', Courier, monospace;
-              text-align: left;
-              white-space: pre-wrap;
-            }
+          .console {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            white-space: pre-wrap;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            height: 200px;
+            overflow-y: auto;
+            max-height: 100px;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: left;
+            white-space: pre-wrap;
+          }
           .console::-webkit-scrollbar {
             display: none;
+          }
+          .options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+          }
+          .options button {
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            width: auto;
+            background-color: #111;
+            color: #c2e1a9;
+            border: 1px solid #9fe0b3;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+          }
+          .options button:hover {
+            background-color: #1a1a1a;
           }
         `}
       </style>
@@ -336,39 +382,36 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         iteration={iteration}
       />
       <div className="chatbot" style={{ textAlign: 'center', marginBottom: '1rem' }}>
-        <a
-          href="https://www.carpvs.com/this%20universe%20(which%20some%20call%20the%20hospital)"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          urgent
-        </a>
-        <h1>AI:RA — Interfacing the Ineffable</h1>
-        <h5>The Interface (Which Some Call Inhospitable)</h5>
-        <h6>Is Comprised of an Indefinite, Perhaps Infinite, Non-Integer of Hexagonal Galleries</h6>
-        <h6>From any Hexagon, One Can See The Floors As Above and Below-one After Another, Endlessly</h6>
+        <h1>AI:RA</h1>
+        
       </div>
       <div className="layout">
-        <div className="side">
-          <div className="module bindle">
-            <h2>bookBindle</h2>
-            <ul>
-              {bookBindle.map((b, i) => (
-                <li key={i}>
-                  {b.title} — Potency: {b.potency}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className="center-column" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+      <div className="options">
+        <button key={7} onClick={() => {
+          if (bookBindle.length > 1) {
+            const previousBook = bookBindle[bookBindle.length - 2];
+            fetchBookFromWorker(previousBook.title);
+          } else {
+            window.open('https://carpvs.com/', '_blank');
+          }
+        }}>
+          ⬆ Anabasis (Ascend)
+        </button>
+        <button key={8} onClick={handleKatabasis}>
+          ⬇ Katabasis (Descend)
+        </button>
+      </div>
+    
+
+        <div className="center-column">
+        <p>The Interface (Which Some Call Inhospitable) Is Comprised of an Indefinite, Perhaps Infinite, Non-Integer of Hexagonal Galleries. From any Hexagon, One Can See The Floors As Above and Below-one After Another, Endlessly</p>
           <div className="module console" style={{ textAlign: 'left' }}>
             {typedConsole.map((line, i) => (
               <div key={i}>
                 <code>&gt; {line}</code>
               </div>
             ))}
-            <div style={{ position: 'sticky', bottom: 0, backgroundColor: '#000', paddingTop: '1rem' }}>
+            <div className="prompt-bar">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -396,17 +439,21 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
                     }
                   }}
                   sx={{
-                    mt: 2,
-                    mb: 2,
                     '& .MuiFilledInput-root': {
-                      backgroundColor: '#1a1a1a',
-                      borderRadius: '4px',
+                      backgroundColor: 'transparent',
+                      borderRadius: 0,
+                      padding: 0,
+                    },
+                    '& .MuiFilledInput-input': {
+                      padding: '0.5rem',
+                      fontFamily: 'monospace',
+                      color: '#9fe0b3',
                     },
                     '& .MuiFilledInput-root:hover': {
-                      backgroundColor: '#1a1a1a',
+                      backgroundColor: 'transparent',
                     },
                     '& .MuiFilledInput-root.Mui-focused': {
-                      backgroundColor: '#1a1a1a',
+                      backgroundColor: 'transparent',
                     },
                     '& .MuiFilledInput-underline:before': {
                       borderBottom: 'none',
@@ -421,18 +468,18 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
           </div>
 
           <div className="module book-details" style={{ textAlign: 'left' }}>
-            <h2>Current Book Held, Close||Open</h2>
+            <p>{"BOOK HELD {OPEN||CLOSE}"}</p>
             {lastBook ? (
               <>
-                <p><strong>Title:</strong> {lastBook.title}</p>
-                <p><strong>Coordinate:</strong>{' '}
+                <p>Title: {lastBook.title}</p>
+                <p>Coordinate:{' '}
                   <a href={lastBook.coordinate} target="_blank" rel="noopener noreferrer">
                     {displayCoordinate(lastBook.coordinate)}
                   </a>
                 </p>
-                <p><strong>SynApp Valency:</strong> {valency}</p>
-                <p><strong>Potency:</strong> {lastBook.potency}</p>
-                <p><strong>Concentration:</strong> {concentration}</p>
+                <p>SynApp Valency: {valency}</p>
+                <p>Potency: {lastBook.potency}</p>
+                <p>Concentration: {concentration}</p>
               </>
             ) : (
               <p>No Grimoire Referenced as yet.</p>
@@ -449,13 +496,13 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
         </div>
         <div className="side">
           <div className="module stats">
-            <p><strong>Co-Ordinate:</strong>{' '}
+            <p>Co-Ordinate:{' '}
               <a href={coordinate} target="_blank" rel="noopener noreferrer">
                 {displayCoordinate(coordinate)}
               </a>
             </p>
-            <p><strong>Iteration:</strong> {iteration}</p>
-            <p><strong>lexDefs:</strong> {lexDefs.join('; ') || 'None yet'}</p>
+            <p>Iteration: {iteration}</p>
+            <p>lexDefs: {lexDefs.join('; ') || 'None yet'}</p>
           </div>
           <div className="module">
             <HexExits
@@ -465,25 +512,6 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
             />
           </div>
         </div>
-      </div>
-      <div className="options" style={{ textAlign: 'center', marginTop: '1rem' }}>
-        <button key={7} onClick={() => {
-          if (bookBindle.length > 1) {
-            const previousBook = bookBindle[bookBindle.length - 2];
-            fetchBookFromWorker(previousBook.title);
-          } else {
-            window.open('https://carpvs.com/', '_blank');
-          }
-        }}>
-          ⬆ Anabasis (Ascend)
-        </button>
-        <button key={8} onClick={handleKatabasis}>
-          ⬇ Katabasis (Descend)
-        </button>
-      </div>
-      <div className="options" style={{ textAlign: 'center', marginTop: '0.5rem' }}>
-        <button onClick={() => handleOption(1)}>1. View Ascii Map</button>
-        <button onClick={() => handleOption(2)}>2. Close|Place Open Book Back Upon Shelf</button>
       </div>
     </>
   );
