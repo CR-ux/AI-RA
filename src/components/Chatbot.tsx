@@ -311,15 +311,19 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
             border: 1px solid #9fe0b3;
             padding: 0.5rem;
             background: #111;
+            text-align: left;
           }
-          .console {
-            display: flex;
-            flex-direction: column;
-            max-height: 400px;
-            overflow-y: scroll;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-          }
+            .console {
+              display: flex;
+              flex-direction: column;
+              max-height: 400px;
+              overflow-y: scroll;
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+              font-family: 'Courier New', Courier, monospace;
+              text-align: left;
+              white-space: pre-wrap;
+            }
           .console::-webkit-scrollbar {
             display: none;
           }
@@ -356,20 +360,9 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
               ))}
             </ul>
           </div>
-          <div className="module vessel">
-            <h2>ATHANOR--</h2>
-            <p>Empty.</p>
-          </div>
         </div>
         <div className="center-column" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
-          <div className="module">
-            <HexExits
-              lexDefs={lexDefs}
-              entranceLink={bookBindle.length > 1 ? bookBindle[bookBindle.length - 2]?.title : ""}
-              exitLink={links[0] || ""}
-            />
-          </div>
-          <div className="module console">
+          <div className="module console" style={{ textAlign: 'left' }}>
             {typedConsole.map((line, i) => (
               <div key={i}>
                 <code>&gt; {line}</code>
@@ -426,19 +419,8 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
               </form>
             </div>
           </div>
-        </div>
-        <div className="side">
-          <div className="module stats">
-            <p><strong>Co-Ordinate:</strong>{' '}
-              <a href={coordinate} target="_blank" rel="noopener noreferrer">
-                {displayCoordinate(coordinate)}
-              </a>
-            </p>
-            <p><strong>Iteration:</strong> {iteration}</p>
-            <p><strong>Learned Spells:</strong> {spells.join(', ')}</p>
-            <p><strong>lexDefs:</strong> {lexDefs.join('; ') || 'None yet'}</p>
           </div>
-          <div className="module book-details">
+          <div className="module book-details" style={{ textAlign: 'left' }}>
             <h2>Current Book Held, Close||Open</h2>
             {lastBook ? (
               <>
@@ -463,6 +445,24 @@ export default function Chatbot({ initialContent }: ChatbotProps) {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+        <div className="side">
+          <div className="module stats">
+            <p><strong>Co-Ordinate:</strong>{' '}
+              <a href={coordinate} target="_blank" rel="noopener noreferrer">
+                {displayCoordinate(coordinate)}
+              </a>
+            </p>
+            <p><strong>Iteration:</strong> {iteration}</p>
+            <p><strong>lexDefs:</strong> {lexDefs.join('; ') || 'None yet'}</p>
+          </div>
+          <div className="module">
+            <HexExits
+              lexDefs={lexDefs}
+              entranceLink={bookBindle.length > 1 ? bookBindle[bookBindle.length - 2]?.title : ""}
+              exitLink={links[0] || ""}
+            />
           </div>
         </div>
       </div>
